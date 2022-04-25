@@ -1,6 +1,6 @@
 {
-  "name": "isometric_physics",
-  "description": "Isometric Physics",
+  "name": "entity_physics",
+  "description": "Simple entity physics for game worlds",
   "author": "Bruno Brito <brunodb3@gmail.com>",
   "private": false,
   "version": "0.0.1",
@@ -10,10 +10,18 @@
     "build": "tsc",
     "prestart": "yarn build",
     "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/index.js",
-    "start:dev": "ts-node-dev --clear -r tsconfig-paths/register src/index.ts"
+    "start:dev": "ts-node-dev --clear -r tsconfig-paths/register src/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/three": "^0.139.0",
+    "three": "^0.139.2"
+  },
   "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.4.0",
+    "ts-jest": "^27.1.4",
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.14.1",
     "tslint": "^6.1.3",
