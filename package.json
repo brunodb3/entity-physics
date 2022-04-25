@@ -1,5 +1,5 @@
 {
-  "name": "entity_physics",
+  "name": "@brunodb3/entity-physics",
   "description": "Simple entity physics for game worlds",
   "author": "Bruno Brito <brunodb3@gmail.com>",
   "private": false,

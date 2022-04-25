@@ -7,15 +7,15 @@ Simple entity physics simulation for game worlds. This project is still a work-i
 Install the package to your project:
 
 ```bash
-$ npm install --save @brunodb3/entity-physx
+$ npm install --save @brunodb3/entity-physics
 # or
-$ yarn add @brunodb3/entity-physx
+$ yarn add @brunodb3/entity-physics
 ```
 
 Then add it to your game client/server:
 
 ```typescript
-import { Physics } from "@brunodb3/entity-physx";
+import { Physics } from "@brunodb3/entity-physics";
 
 // ? Instantiate the Physics processor
 //   The default FPS value is 60
@@ -32,7 +32,7 @@ You can change the frequency of updates with the `fps` option on the `Physics` c
 You can add entities to the physics processor and add forces to those entities. Their kinematics will be calculated at every tick (velocity, position, direction...):
 
 ```typescript
-import { Physics, Entity } from "@brunodb3/entity-physx";
+import { Physics, Entity } from "@brunodb3/entity-physics";
 
 const physics = new Physics();
 
