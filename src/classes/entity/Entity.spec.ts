@@ -79,10 +79,12 @@ describe("Entity", () => {
 
       expect(entity.toJSON()).toStrictEqual({
         id: "some-id",
+        type: "default",
         direction: "right",
         lastInputSequence: 0,
         position: { x: 0, y: 0, z: 0 },
         velocity: { x: 0, y: 0, z: 0 },
+        animation: { frame: 0, speed: 0, name: "default" },
       });
     });
   });

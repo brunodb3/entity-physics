@@ -5,27 +5,45 @@ import { IEntity } from "@interfaces";
 
 export class Entity {
   public id: string;
+  public type: string;
   public kinematics: Kinematics;
   public runningMultiplier: number;
   public lastInputSequence: number;
   public direction: "left" | "right";
   public position: { x: number; y: number; z: number };
+  public animation: {
+    frame: number;
+    speed: number;
+    name: string;
+  };
 
   constructor(
     id: string,
     options?: {
+      type?: string;
       runningMultiplier?: number;
       minVelocity?: number;
       maxVelocity?: number;
       acceleration?: number;
       frictionMultiplier?: number;
+      animation?: {
+        frame?: number;
+        speed?: number;
+        name?: string;
+      };
     }
   ) {
     this.id = id;
     this.direction = "right";
     this.lastInputSequence = 0;
     this.position = { x: 0, y: 0, z: 0 };
+    this.type = options?.type || "default";
     this.runningMultiplier = options?.runningMultiplier || 1.5;
+    this.animation = {
+      frame: options?.animation?.frame || 0,
+      speed: options?.animation?.speed || 0,
+      name: options?.animation?.name || "default",
+    };
 
     this.kinematics = new Kinematics({
       minVelocity: options?.minVelocity,
@@ -62,8 +80,14 @@ export class Entity {
   public toJSON(): IEntity {
     return {
       id: this.id,
+      type: this.type,
       direction: this.direction,
       lastInputSequence: this.lastInputSequence,
+      animation: {
+        frame: this.animation.frame,
+        speed: this.animation.speed,
+        name: this.animation.name,
+      },
       position: {
         x: this.position.x,
         y: this.position.y,

@@ -142,5 +142,16 @@ describe("Physics", () => {
 
       expect(physics.entities[0].toJSON).toHaveBeenCalledTimes(1);
     });
+
+    it("should map entities based on their type", () => {
+      const physics = new Physics();
+
+      physics.entities = [
+        { type: "1", toJSON: () => ({ id: "1", type: "1" }) } as any,
+        { type: "2", toJSON: () => ({ id: "2", type: "2" }) } as any,
+      ];
+
+      expect(physics.jsonEntities("1")).toStrictEqual([{ id: "1", type: "1" }]);
+    });
   });
 });

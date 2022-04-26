@@ -50,7 +50,15 @@ export class Physics {
     return this.entities.map((each) => each.id);
   }
 
-  public jsonEntities(): IEntity[] {
-    return this.entities.map((each) => each.toJSON());
+  public jsonEntities(type?: string): IEntity[] {
+    let entities = this.entities;
+
+    if (type) {
+      entities = entities.filter(
+        (each) => each.type.toLowerCase() === type.toLowerCase()
+      );
+    }
+
+    return entities.map((each) => each.toJSON());
   }
 }
