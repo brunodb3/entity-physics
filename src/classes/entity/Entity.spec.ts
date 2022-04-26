@@ -73,6 +73,7 @@ describe("Entity", () => {
         lastInputSequence: 0,
         position: { x: 0, y: 0, z: 0 },
         velocity: { x: 0, y: 0, z: 0 },
+        movementMultiplier: { x: 1, y: 1, z: 1 },
         animation: { frame: 0, speed: 0, name: "default" },
       });
     });

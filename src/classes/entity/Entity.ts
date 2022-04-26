@@ -16,20 +16,30 @@ export class Entity {
     speed: number;
     name: string;
   };
+  public movementMultiplier: {
+    x: number;
+    y: number;
+    z: number;
+  };
 
   constructor(
     id: string,
     options?: {
       type?: string;
-      runningMultiplier?: number;
       minVelocity?: number;
       maxVelocity?: number;
       acceleration?: number;
+      runningMultiplier?: number;
       frictionMultiplier?: number;
       animation?: {
         frame?: number;
         speed?: number;
         name?: string;
+      };
+      movementMultiplier?: {
+        x?: number;
+        y?: number;
+        z?: number;
       };
     }
   ) {
@@ -44,6 +54,11 @@ export class Entity {
       speed: options?.animation?.speed || 0,
       name: options?.animation?.name || "default",
     };
+    this.movementMultiplier = {
+      x: options?.movementMultiplier?.x || 1,
+      y: options?.movementMultiplier?.y || 1,
+      z: options?.movementMultiplier?.z || 1,
+    };
 
     this.kinematics = new Kinematics({
       minVelocity: options?.minVelocity,
@@ -56,9 +71,9 @@ export class Entity {
   public tick(delta: number): void {
     const { velocity } = this.kinematics;
 
-    this.position.x += velocity.x * delta;
-    this.position.y += velocity.y * delta;
-    this.position.z += velocity.z * delta;
+    this.position.x += velocity.x * delta * this.movementMultiplier.x;
+    this.position.y += velocity.y * delta * this.movementMultiplier.y;
+    this.position.z += velocity.z * delta * this.movementMultiplier.z;
 
     if (velocity.x < 0) {
       this.direction = "left";
@@ -100,6 +115,11 @@ export class Entity {
         x: this.kinematics.velocity.x,
         y: this.kinematics.velocity.y,
         z: this.kinematics.velocity.z,
+      },
+      movementMultiplier: {
+        x: this.movementMultiplier.x,
+        y: this.movementMultiplier.y,
+        z: this.movementMultiplier.z,
       },
     };
   }
