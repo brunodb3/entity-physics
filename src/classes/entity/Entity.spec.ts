@@ -8,6 +8,8 @@ jest.mock("../kinematics");
 describe("Entity", () => {
   beforeEach(() => {
     mocked(Kinematics).mockClear();
+    mocked(Kinematics).mockReset();
+    mocked(Kinematics).prototype.velocity = new Vector3(0, 0, 0);
   });
 
   it("should create a new Entity", () => {
@@ -55,8 +57,7 @@ describe("Entity", () => {
       entity.tick(1);
 
       expect(entity.position.x).toBe(1);
-      // ? Y position is negative
-      expect(entity.position.y).toBe(-1);
+      expect(entity.position.y).toBe(1);
     });
 
     it("should change direction based on position on tick", () => {
@@ -69,6 +70,20 @@ describe("Entity", () => {
       entity.tick(1);
 
       expect(entity.direction).toBe("left");
+    });
+  });
+
+  describe("toJSON()", () => {
+    it("should return entity in JSON", () => {
+      const entity = new Entity("some-id");
+
+      expect(entity.toJSON()).toStrictEqual({
+        id: "some-id",
+        direction: "right",
+        lastInputSequence: 0,
+        position: { x: 0, y: 0, z: 0 },
+        velocity: { x: 0, y: 0, z: 0 },
+      });
     });
   });
 });

@@ -10,9 +10,6 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc --declaration && tsc-alias -p tsconfig.json",
-    "prestart": "yarn build",
-    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/index.js",
-    "start:dev": "ts-node-dev --clear -r tsconfig-paths/register src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -23,6 +20,7 @@
     "@types/jest": "^27.4.1",
     "@types/three": "^0.139.0",
     "jest": "^27.4.0",
+    "jest-mock": "^28.0.0",
     "ts-jest": "^27.1.4",
     "ts-node-dev": "^1.1.8",
     "tsc-alias": "^1.6.7",

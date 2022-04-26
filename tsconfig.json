@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "@classes": ["src/classes"]
+      "@classes": ["src/classes"],
+      "@interfaces": ["src/interfaces"]
     }
   },
   "include": ["src"]
