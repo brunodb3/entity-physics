@@ -60,9 +60,12 @@ export class Entity {
     this.position.y += velocity.y * delta;
     this.position.z += velocity.z * delta;
 
-    this.direction = "right";
     if (velocity.x < 0) {
       this.direction = "left";
+    }
+
+    if (velocity.x > 0) {
+      this.direction = "right";
     }
   }
 

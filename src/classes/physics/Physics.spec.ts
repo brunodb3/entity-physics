@@ -1,5 +1,3 @@
-import { mocked } from "jest-mock";
-
 import { Physics, Entity } from "@classes";
 
 jest.useFakeTimers();
@@ -7,10 +5,6 @@ jest.mock("../entity");
 jest.spyOn(global, "setInterval");
 
 describe("Physics", () => {
-  beforeEach(() => {
-    mocked(Entity).mockClear();
-  });
-
   it("should create a new Physics", () => {
     const physics = new Physics();
 

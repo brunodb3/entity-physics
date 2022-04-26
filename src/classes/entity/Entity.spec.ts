@@ -1,17 +1,8 @@
 import { Vector3 } from "three";
-import { mocked } from "jest-mock";
 
-import { Entity, Kinematics } from "@classes";
-
-jest.mock("../kinematics");
+import { Entity } from "@classes";
 
 describe("Entity", () => {
-  beforeEach(() => {
-    mocked(Kinematics).mockClear();
-    mocked(Kinematics).mockReset();
-    mocked(Kinematics).prototype.velocity = new Vector3(0, 0, 0);
-  });
-
   it("should create a new Entity", () => {
     const entity = new Entity("some-id");
 
@@ -21,35 +12,34 @@ describe("Entity", () => {
   describe("addForce()", () => {
     it("should add a force", () => {
       const entity = new Entity("some-id");
+      const addForceSpy = jest
+        .spyOn(entity.kinematics, "addForce")
+        .mockImplementation(() => {});
 
       entity.addForce({ x: 1, y: 0 });
 
-      expect(mocked(Kinematics).prototype.addForce).toHaveBeenNthCalledWith(
-        1,
-        new Vector3(1, 0, 0)
-      );
+      expect(addForceSpy).toHaveBeenNthCalledWith(1, new Vector3(1, 0, 0));
     });
 
     it("should add a force when running", () => {
       const entity = new Entity("some-id");
+      const addForceSpy = jest
+        .spyOn(entity.kinematics, "addForce")
+        .mockImplementation(() => {});
 
       entity.addForce({ x: 1, y: 0 }, true);
 
       const expectedForce = new Vector3(1, 0, 0);
       expectedForce.multiplyScalar(entity.runningMultiplier);
 
-      expect(mocked(Kinematics).prototype.addForce).toHaveBeenNthCalledWith(
-        2,
-        expectedForce
-      );
+      expect(addForceSpy).toHaveBeenNthCalledWith(1, expectedForce);
     });
   });
 
   describe("tick()", () => {
     it("should change position based on velocity on tick", () => {
       const entity = new Entity("some-id");
-
-      mocked(Kinematics).prototype.velocity = new Vector3(1, 1, 0);
+      entity.kinematics.velocity = new Vector3(1, 1, 0);
 
       expect(entity.position.x).toBe(0);
       expect(entity.position.y).toBe(0);
@@ -62,8 +52,7 @@ describe("Entity", () => {
 
     it("should change direction based on position on tick", () => {
       const entity = new Entity("some-id");
-
-      mocked(Kinematics).prototype.velocity = new Vector3(-1, 0, 0);
+      entity.kinematics.velocity = new Vector3(-1, 0, 0);
 
       expect(entity.direction).toBe("right");
 
