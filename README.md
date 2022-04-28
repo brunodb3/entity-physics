@@ -1,6 +1,14 @@
 # Entity Physics
 
+![npm (scoped)](https://img.shields.io/npm/v/@brunodb3/entity-physics?style=for-the-badge)
+![npm](https://img.shields.io/npm/dt/@brunodb3/entity-physics?style=for-the-badge)
+![NPM](https://img.shields.io/npm/l/@brunodb3/entity-physics?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/brunodb3/entity-physics?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/brunodb3/entity-physics?style=for-the-badge)
+
 Simple entity physics simulation for game worlds. This project is still a work-in-progress.
+
+_This project was created to help creating Northern Guilds, you can find more about the game on [northernguilds.com](https://northernguilds.com/)_
 
 ## Usage
 
@@ -37,13 +45,13 @@ import { Physics, Entity } from "@brunodb3/entity-physics";
 const physics = new Physics();
 
 // ? All vectors are Vector3 from ThreeJS, but the Z axis is optional (if not given, will be 0).
-//   This allows for 2D worlds as well as 3D and isometric 2D.
+//   This allows for 2D worlds as well and isometric 2D with height maps
 // ? Entities start with `entity.kinematics.velocity = { x: 0, y: 0, z: 0 }`
 const someEntity = new Entity("some-id");
 
 // ? If you want an entity to be processed at every tick, you need to add it to
 //   the `entities` array in the physics processor
-physics.entities.push(someEntity);
+physics.entities.addEntity(someEntity);
 
 // ? All forces are multiplied by the `deltaTime`, allowing for multiple framerates
 //   without compromising the actual processing of the entities
@@ -68,7 +76,10 @@ const entity = new Entity('some-id', {
   maxVelocity: 9.5
   acceleration: 0.7,
   frictionMultiplier: 0.9
+  ...
 });
 ```
+
+For more information on how to use the library, see the `.spec` files, as they provide working examples.
 
 # Bruno Duarte Brito - 2022

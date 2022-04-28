@@ -2,7 +2,9 @@ import { Vector3 } from "three";
 
 import { Kinematics } from "@classes";
 import { IEntity } from "@interfaces";
+import { isBoxColliding } from "@utils";
 
+// @todo: add flexibility for any kind of properties?
 export class Entity {
   public id: string;
   public type: string;
@@ -11,6 +13,7 @@ export class Entity {
   public lastInputSequence: number;
   public direction: "left" | "right";
   public position: { x: number; y: number; z: number };
+  public collisionBox: { width: number; height: number };
   public animation: {
     frame: number;
     speed: number;
@@ -36,6 +39,11 @@ export class Entity {
         speed?: number;
         name?: string;
       };
+      // ? Fow now, we only support collision boxes
+      collisionBox?: {
+        width?: number;
+        height?: number;
+      };
       movementMultiplier?: {
         x?: number;
         y?: number;
@@ -49,6 +57,10 @@ export class Entity {
     this.position = { x: 0, y: 0, z: 0 };
     this.type = options?.type || "default";
     this.runningMultiplier = options?.runningMultiplier || 1.5;
+    this.collisionBox = {
+      width: options?.collisionBox?.width || 0,
+      height: options?.collisionBox?.height || 0,
+    };
     this.animation = {
       frame: options?.animation?.frame || 0,
       speed: options?.animation?.speed || 0,
@@ -59,7 +71,6 @@ export class Entity {
       y: options?.movementMultiplier?.y || 1,
       z: options?.movementMultiplier?.z || 1,
     };
-
     this.kinematics = new Kinematics({
       minVelocity: options?.minVelocity,
       maxVelocity: options?.maxVelocity,
@@ -82,6 +93,31 @@ export class Entity {
     if (velocity.x > 0) {
       this.direction = "right";
     }
+  }
+
+  public checkCollisions(entities: Entity[]): string[] {
+    const collisions: string[] = [];
+    const entityCollisionBox = {
+      x: this.position.x,
+      y: this.position.y,
+      width: this.collisionBox.width,
+      height: this.collisionBox.height,
+    };
+
+    entities.forEach((each) => {
+      const eachCollisionBox = {
+        x: each.position.x,
+        y: each.position.y,
+        width: each.collisionBox.width,
+        height: each.collisionBox.height,
+      };
+
+      const hit = isBoxColliding(entityCollisionBox, eachCollisionBox);
+
+      if (hit) collisions.push(each.id);
+    });
+
+    return collisions;
   }
 
   public addForce(
@@ -120,6 +156,10 @@ export class Entity {
         x: this.movementMultiplier.x,
         y: this.movementMultiplier.y,
         z: this.movementMultiplier.z,
+      },
+      collisionBox: {
+        width: this.collisionBox.width,
+        height: this.collisionBox.height,
       },
     };
   }

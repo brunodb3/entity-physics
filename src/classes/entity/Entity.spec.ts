@@ -73,8 +73,53 @@ describe("Entity", () => {
         lastInputSequence: 0,
         position: { x: 0, y: 0, z: 0 },
         velocity: { x: 0, y: 0, z: 0 },
+        collisionBox: { width: 0, height: 0 },
         movementMultiplier: { x: 1, y: 1, z: 1 },
         animation: { frame: 0, speed: 0, name: "default" },
+      });
+    });
+  });
+
+  describe("checkCollisions()", () => {
+    it("should return the colliding entities", () => {
+      const entities: Entity[] = [];
+
+      for (let index = 0; index < 5; index++) {
+        const entity = new Entity(`entity-${index}`, {
+          collisionBox: { width: 1, height: 1 },
+        });
+
+        entity.position.x = index;
+        entity.position.y = index;
+
+        entities.push(entity);
+      }
+
+      entities.forEach((entity, index) => {
+        const collisions = entity.checkCollisions(
+          entities.filter((_, otherIndex) => otherIndex !== index)
+        );
+
+        expect(collisions).toStrictEqual([]);
+      });
+
+      // ? Moving second entity to collide with the first
+      entities[1].position.x = 0.5;
+      entities[1].position.y = 0.5;
+
+      entities.forEach((entity, index) => {
+        const collisions = entity.checkCollisions(
+          entities.filter((_, otherIndex) => otherIndex !== index)
+        );
+
+        // ? Only for first and second entity should collide
+        if (index === 0) {
+          expect(collisions).toStrictEqual([`entity-1`]);
+        } else if (index === 1) {
+          expect(collisions).toStrictEqual([`entity-0`]);
+        } else {
+          expect(collisions).toStrictEqual([]);
+        }
       });
     });
   });
