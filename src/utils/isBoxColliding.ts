@@ -11,7 +11,11 @@ export function isBoxColliding(
   boxA: ICollidingBox,
   boxB: ICollidingBox
 ): boolean {
-  let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+  let vx;
+  let vy;
+  let hit;
+  let combinedHalfWidths;
+  let combinedHalfHeights;
 
   hit = false;
 
