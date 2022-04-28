@@ -1,8 +1,8 @@
 import { Vector3 } from "three";
+import intersects from "intersects";
 
 import { Kinematics } from "@classes";
 import { IEntity } from "@interfaces";
-import { isBoxColliding } from "@utils";
 
 // @todo: add flexibility for any kind of properties?
 export class Entity {
@@ -114,7 +114,16 @@ export class Entity {
         height: each.collisionBox.height,
       };
 
-      const hit = isBoxColliding(entityCollisionBox, eachCollisionBox);
+      const hit = intersects.boxBox(
+        entityCollisionBox.x,
+        entityCollisionBox.y,
+        entityCollisionBox.width,
+        entityCollisionBox.height,
+        eachCollisionBox.x,
+        eachCollisionBox.y,
+        eachCollisionBox.width,
+        eachCollisionBox.height
+      );
 
       if (hit) collisions.push(each.id);
     });
