@@ -12,6 +12,7 @@ export class Entity {
   public runningMultiplier: number;
   public lastInputSequence: number;
   public direction: "left" | "right";
+  public entitiesColliding: string[];
   public position: { x: number; y: number; z: number };
   public collisionBox: { width: number; height: number };
   public animation: {
@@ -54,6 +55,7 @@ export class Entity {
     this.id = id;
     this.direction = "right";
     this.lastInputSequence = 0;
+    this.entitiesColliding = [];
     this.position = { x: 0, y: 0, z: 0 };
     this.type = options?.type || "default";
     this.runningMultiplier = options?.runningMultiplier || 1.5;
@@ -136,6 +138,7 @@ export class Entity {
       id: this.id,
       type: this.type,
       direction: this.direction,
+      entitiesColliding: this.entitiesColliding,
       lastInputSequence: this.lastInputSequence,
       animation: {
         frame: this.animation.frame,

@@ -71,6 +71,7 @@ describe("Entity", () => {
         type: "default",
         direction: "right",
         lastInputSequence: 0,
+        entitiesColliding: [],
         position: { x: 0, y: 0, z: 0 },
         velocity: { x: 0, y: 0, z: 0 },
         collisionBox: { width: 0, height: 0 },

@@ -24,8 +24,11 @@ export class Physics {
 
       if (callback) callback(deltaTime);
 
-      this.entities.forEach((entity) => {
+      this.entities.forEach((entity, index) => {
         entity.tick(deltaTime);
+        entity.entitiesColliding = entity.checkCollisions(
+          this.entities.filter((_, otherIndex) => otherIndex !== index)
+        );
       });
     }, 1000 / this.fps);
   }

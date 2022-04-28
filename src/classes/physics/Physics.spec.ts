@@ -53,6 +53,19 @@ describe("Physics", () => {
       expect(physics.entities[0].tick).toHaveBeenNthCalledWith(1, 0.016);
     });
 
+    it("should calculate the entities collisions on every tick", () => {
+      const physics = new Physics();
+
+      physics.start();
+
+      physics.addEntity(new Entity("some-id"));
+
+      // ? 60fps means around 16ms per frame, so we advance by 17 for 1 frame
+      jest.advanceTimersByTime(17);
+
+      expect(physics.entities[0].checkCollisions).toHaveBeenCalledTimes(1);
+    });
+
     it("should call the callback if it was given", () => {
       const callback = jest.fn();
 

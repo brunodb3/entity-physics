@@ -2,6 +2,7 @@ export interface IEntity {
   id: string;
   type: string;
   lastInputSequence: number;
+  entitiesColliding: string[];
   direction: "left" | "right";
   position: { x: number; y: number; z: number };
   velocity: { x: number; y: number; z: number };
