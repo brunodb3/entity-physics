@@ -83,18 +83,20 @@ describe("Entity", () => {
 
   describe("checkCollisions()", () => {
     it("should return the colliding entities", () => {
-      const entities: Entity[] = [];
+      const firstEntity = new Entity("entity-0", {
+        collisionBox: { width: 1, height: 1 },
+      });
+      const secondEntity = new Entity("entity-1", {
+        collisionBox: { width: 1, height: 1 },
+      });
 
-      for (let index = 0; index < 5; index++) {
-        const entity = new Entity(`entity-${index}`, {
-          collisionBox: { width: 1, height: 1 },
-        });
+      const entities: Entity[] = [firstEntity, secondEntity];
 
-        entity.position.x = index;
-        entity.position.y = index;
+      firstEntity.position.x = 0;
+      firstEntity.position.x = 0;
 
-        entities.push(entity);
-      }
+      secondEntity.position.x = 2;
+      secondEntity.position.y = 2;
 
       entities.forEach((entity, index) => {
         const collisions = entity.checkCollisions(
@@ -105,21 +107,20 @@ describe("Entity", () => {
       });
 
       // ? Moving second entity to collide with the first
-      entities[1].position.x = 0.5;
-      entities[1].position.y = 0.5;
+      secondEntity.position.x = 0.5;
+      secondEntity.position.y = 0.5;
 
       entities.forEach((entity, index) => {
         const collisions = entity.checkCollisions(
           entities.filter((_, otherIndex) => otherIndex !== index)
         );
 
-        // ? Only for first and second entity should collide
         if (index === 0) {
           expect(collisions).toStrictEqual([`entity-1`]);
-        } else if (index === 1) {
+        }
+
+        if (index === 1) {
           expect(collisions).toStrictEqual([`entity-0`]);
-        } else {
-          expect(collisions).toStrictEqual([]);
         }
       });
     });

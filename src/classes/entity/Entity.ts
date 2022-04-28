@@ -100,16 +100,20 @@ export class Entity {
   public checkCollisions(entities: Entity[]): string[] {
     const collisions: string[] = [];
     const entityCollisionBox = {
-      x: this.position.x,
-      y: this.position.y,
+      // ? This considers an anchor on the center of the entity,
+      //   so X and Y need to represent the top-left corner of the box
+      x: this.position.x - this.collisionBox.width / 2,
+      y: this.position.y - this.collisionBox.height / 2,
       width: this.collisionBox.width,
       height: this.collisionBox.height,
     };
 
     entities.forEach((each) => {
       const eachCollisionBox = {
-        x: each.position.x,
-        y: each.position.y,
+        // ? This considers an anchor on the center of the entity,
+        //   so X and Y need to represent the top-left corner of the box
+        x: each.position.x - each.collisionBox.width / 2,
+        y: each.position.y - each.collisionBox.height / 2,
         width: each.collisionBox.width,
         height: each.collisionBox.height,
       };
