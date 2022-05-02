@@ -67,6 +67,8 @@ describe("Entity", () => {
       const entity = new Entity("some-id");
 
       expect(entity.toJSON()).toStrictEqual({
+        mass: 1,
+        anchor: 1,
         id: "some-id",
         type: "default",
         direction: "right",

@@ -14,9 +14,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@types/intersects": "^2.5.0",
     "@types/three": "^0.139.0",
-    "intersects": "^2.7.2",
     "three": "^0.139.2"
   },
   "devDependencies": {

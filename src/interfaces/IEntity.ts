@@ -1,6 +1,8 @@
 export interface IEntity {
   id: string;
   type: string;
+  mass: number;
+  anchor: number;
   lastInputSequence: number;
   entitiesColliding: string[];
   direction: "left" | "right";

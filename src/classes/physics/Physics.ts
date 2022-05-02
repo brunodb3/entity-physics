@@ -1,16 +1,28 @@
 import { Entity } from "@classes";
 import { IEntity } from "@interfaces";
+import { collisionForce } from "@utils";
 
 export class Physics {
   public entities: Entity[];
   public lastTickTime: number;
 
   private fps: number;
+  private shouldApplyCollisions: boolean;
+  private shouldDetectCollisions: boolean;
 
-  constructor(options?: { fps?: number }) {
+  constructor(options?: {
+    fps?: number;
+    shouldDetectCollisions?: boolean;
+    shouldApplyCollisions?: boolean;
+  }) {
     this.entities = [];
     this.fps = options?.fps || 60;
     this.lastTickTime = Date.now();
+    this.shouldApplyCollisions = options?.shouldApplyCollisions || false;
+    // ? If shouldApplyCollisions is `true`, then `shouldDetectCollisions` must be true as well
+    this.shouldDetectCollisions = options?.shouldApplyCollisions
+      ? true
+      : options?.shouldDetectCollisions || false;
   }
 
   public start(callback?: (delta: number) => void): void {
@@ -26,9 +38,25 @@ export class Physics {
 
       this.entities.forEach((entity, index) => {
         entity.tick(deltaTime);
-        entity.entitiesColliding = entity.checkCollisions(
-          this.entities.filter((_, otherIndex) => otherIndex !== index)
-        );
+
+        // @todo: apply more efficient algorithms for checking collision?
+        // see https://www.toptal.com/game/video-game-physics-part-ii-collision-detection-for-solid-objects
+        if (this.shouldDetectCollisions) {
+          entity.entitiesColliding = entity.checkCollisions(
+            this.entities.filter((_, otherIndex) => otherIndex !== index)
+          );
+
+          if (this.shouldApplyCollisions) {
+            entity.entitiesColliding.forEach((collider) => {
+              const colliderEntity = this.entities.find(
+                (each) => each.id === collider
+              );
+              if (!colliderEntity) return;
+
+              this.applyCollisionForces(entity, colliderEntity);
+            });
+          }
+        }
       });
     }, 1000 / this.fps);
   }
@@ -63,5 +91,24 @@ export class Physics {
     }
 
     return entities.map((each) => each.toJSON());
+  }
+
+  // @todo: calculate and apply collision forces
+  // @todo: tests
+  public applyCollisionForces(entity1: Entity, entity2: Entity): void {
+    const entity1CollisionModel = entity1.getCollisionModel();
+    const entity2CollisionModel = entity2.getCollisionModel();
+
+    const entity1Force = collisionForce(
+      entity1CollisionModel,
+      entity2CollisionModel
+    );
+    const entity2Force = collisionForce(
+      entity2CollisionModel,
+      entity1CollisionModel
+    );
+
+    console.log(entity1Force);
+    console.log(entity2Force);
   }
 }

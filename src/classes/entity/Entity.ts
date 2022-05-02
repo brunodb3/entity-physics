@@ -1,13 +1,15 @@
 import { Vector3 } from "three";
-import intersects from "intersects";
 
-import { Kinematics } from "@classes";
 import { IEntity } from "@interfaces";
+import { Kinematics } from "@classes";
+import { ICollisionEntity, testForCollision } from "@utils";
 
 // @todo: add flexibility for any kind of properties?
 export class Entity {
   public id: string;
   public type: string;
+  public mass: number;
+  public anchor: number;
   public kinematics: Kinematics;
   public runningMultiplier: number;
   public lastInputSequence: number;
@@ -30,6 +32,8 @@ export class Entity {
     id: string,
     options?: {
       type?: string;
+      mass?: number;
+      anchor?: number;
       minVelocity?: number;
       maxVelocity?: number;
       acceleration?: number;
@@ -40,7 +44,7 @@ export class Entity {
         speed?: number;
         name?: string;
       };
-      // ? Fow now, we only support collision boxes
+      // ? For now, we only support collision boxes
       collisionBox?: {
         width?: number;
         height?: number;
@@ -56,6 +60,8 @@ export class Entity {
     this.direction = "right";
     this.lastInputSequence = 0;
     this.entitiesColliding = [];
+    this.mass = options?.mass || 1;
+    this.anchor = options?.anchor || 1;
     this.position = { x: 0, y: 0, z: 0 };
     this.type = options?.type || "default";
     this.runningMultiplier = options?.runningMultiplier || 1.5;
@@ -99,35 +105,11 @@ export class Entity {
 
   public checkCollisions(entities: Entity[]): string[] {
     const collisions: string[] = [];
-    const entityCollisionBox = {
-      // ? This considers an anchor on the center of the entity,
-      //   so X and Y need to represent the top-left corner of the box
-      x: this.position.x - this.collisionBox.width / 2,
-      y: this.position.y - this.collisionBox.height / 2,
-      width: this.collisionBox.width,
-      height: this.collisionBox.height,
-    };
+    const entityCollisionModel = this.getCollisionModel();
 
     entities.forEach((each) => {
-      const eachCollisionBox = {
-        // ? This considers an anchor on the center of the entity,
-        //   so X and Y need to represent the top-left corner of the box
-        x: each.position.x - each.collisionBox.width / 2,
-        y: each.position.y - each.collisionBox.height / 2,
-        width: each.collisionBox.width,
-        height: each.collisionBox.height,
-      };
-
-      const hit = intersects.boxBox(
-        entityCollisionBox.x,
-        entityCollisionBox.y,
-        entityCollisionBox.width,
-        entityCollisionBox.height,
-        eachCollisionBox.x,
-        eachCollisionBox.y,
-        eachCollisionBox.width,
-        eachCollisionBox.height
-      );
+      const eachCollisionModel = each.getCollisionModel();
+      const hit = testForCollision(entityCollisionModel, eachCollisionModel);
 
       if (hit) collisions.push(each.id);
     });
@@ -149,7 +131,9 @@ export class Entity {
   public toJSON(): IEntity {
     return {
       id: this.id,
+      mass: this.mass,
       type: this.type,
+      anchor: this.anchor,
       direction: this.direction,
       entitiesColliding: this.entitiesColliding,
       lastInputSequence: this.lastInputSequence,
@@ -177,6 +161,17 @@ export class Entity {
         width: this.collisionBox.width,
         height: this.collisionBox.height,
       },
+    };
+  }
+
+  public getCollisionModel(): ICollisionEntity {
+    return {
+      mass: this.mass,
+      width: this.collisionBox.width,
+      height: this.collisionBox.height,
+      velocity: this.kinematics.velocity,
+      x: this.position.x - this.collisionBox.width * this.anchor,
+      y: this.position.y - this.collisionBox.height * this.anchor,
     };
   }
 }
