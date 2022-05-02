@@ -5,6 +5,13 @@ import { Kinematics } from "@classes";
 import { ICollisionEntity, testForCollision } from "@utils";
 
 // @todo: add flexibility for any kind of properties?
+// @todo: add collision types:
+//        - ghost
+//          can't collide with any other entities
+//        - static
+//          entities may collide, but this.velocity stays the same
+//        - kinematic
+//          fully dynamic kinematics
 export class Entity {
   public id: string;
   public type: string;
@@ -13,9 +20,12 @@ export class Entity {
   public kinematics: Kinematics;
   public runningMultiplier: number;
   public lastInputSequence: number;
+  // @todo: add more directions (up, up-right, down-right, down, etc...)
+  //        could also make it a circle and the direction is the angle? (number)
   public direction: "left" | "right";
   public entitiesColliding: string[];
   public position: { x: number; y: number; z: number };
+  // @todo: rename to boundingBox (the correct term)
   public collisionBox: { width: number; height: number };
   public animation: {
     frame: number;
