@@ -76,7 +76,7 @@ describe("Entity", () => {
         entitiesColliding: [],
         position: { x: 0, y: 0, z: 0 },
         velocity: { x: 0, y: 0, z: 0 },
-        collisionBox: { width: 0, height: 0 },
+        boundingBox: { width: 0, height: 0 },
         movementMultiplier: { x: 1, y: 1, z: 1 },
         animation: { frame: 0, speed: 0, name: "default" },
       });
@@ -86,10 +86,10 @@ describe("Entity", () => {
   describe("checkCollisions()", () => {
     it("should return the colliding entities", () => {
       const firstEntity = new Entity("entity-0", {
-        collisionBox: { width: 1, height: 1 },
+        boundingBox: { width: 1, height: 1 },
       });
       const secondEntity = new Entity("entity-1", {
-        collisionBox: { width: 1, height: 1 },
+        boundingBox: { width: 1, height: 1 },
       });
 
       const entities: Entity[] = [firstEntity, secondEntity];

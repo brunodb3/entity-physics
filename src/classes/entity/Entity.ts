@@ -25,8 +25,7 @@ export class Entity {
   public direction: "left" | "right";
   public entitiesColliding: string[];
   public position: { x: number; y: number; z: number };
-  // @todo: rename to boundingBox (the correct term)
-  public collisionBox: { width: number; height: number };
+  public boundingBox: { width: number; height: number };
   public animation: {
     frame: number;
     speed: number;
@@ -55,7 +54,7 @@ export class Entity {
         name?: string;
       };
       // ? For now, we only support collision boxes
-      collisionBox?: {
+      boundingBox?: {
         width?: number;
         height?: number;
       };
@@ -75,9 +74,9 @@ export class Entity {
     this.position = { x: 0, y: 0, z: 0 };
     this.type = options?.type || "default";
     this.runningMultiplier = options?.runningMultiplier || 1.5;
-    this.collisionBox = {
-      width: options?.collisionBox?.width || 0,
-      height: options?.collisionBox?.height || 0,
+    this.boundingBox = {
+      width: options?.boundingBox?.width || 0,
+      height: options?.boundingBox?.height || 0,
     };
     this.animation = {
       frame: options?.animation?.frame || 0,
@@ -167,9 +166,9 @@ export class Entity {
         y: this.movementMultiplier.y,
         z: this.movementMultiplier.z,
       },
-      collisionBox: {
-        width: this.collisionBox.width,
-        height: this.collisionBox.height,
+      boundingBox: {
+        width: this.boundingBox.width,
+        height: this.boundingBox.height,
       },
     };
   }
@@ -177,11 +176,11 @@ export class Entity {
   public getCollisionModel(): ICollisionEntity {
     return {
       mass: this.mass,
-      width: this.collisionBox.width,
-      height: this.collisionBox.height,
+      width: this.boundingBox.width,
+      height: this.boundingBox.height,
       velocity: this.kinematics.velocity,
-      x: this.position.x - this.collisionBox.width * this.anchor,
-      y: this.position.y - this.collisionBox.height * this.anchor,
+      x: this.position.x - this.boundingBox.width * this.anchor,
+      y: this.position.y - this.boundingBox.height * this.anchor,
     };
   }
 }

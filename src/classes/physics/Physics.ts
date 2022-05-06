@@ -19,7 +19,7 @@ export class Physics {
     this.fps = options?.fps || 60;
     this.lastTickTime = Date.now();
     this.shouldApplyCollisions = options?.shouldApplyCollisions || false;
-    // ? If shouldApplyCollisions is `true`, then `shouldDetectCollisions` must be true as well
+    // ? If shouldApplyCollisions is true, shouldDetectCollisions will also be true
     this.shouldDetectCollisions = options?.shouldApplyCollisions
       ? true
       : options?.shouldDetectCollisions || false;
@@ -51,6 +51,7 @@ export class Physics {
               const colliderEntity = this.entities.find(
                 (each) => each.id === collider
               );
+
               if (!colliderEntity) return;
 
               this.applyCollisionForces(entity, colliderEntity);
@@ -93,8 +94,6 @@ export class Physics {
     return entities.map((each) => each.toJSON());
   }
 
-  // @todo: calculate and apply collision forces
-  // @todo: tests
   public applyCollisionForces(entity1: Entity, entity2: Entity): void {
     const entity1CollisionModel = entity1.getCollisionModel();
     const entity2CollisionModel = entity2.getCollisionModel();
@@ -108,7 +107,7 @@ export class Physics {
       entity1CollisionModel
     );
 
-    console.log(entity1Force);
-    console.log(entity2Force);
+    entity1.addForce(entity1Force);
+    entity2.addForce(entity2Force);
   }
 }

@@ -1,5 +1,7 @@
 import { Physics, Entity } from "@classes";
 
+import { collisionForce } from "@utils";
+
 jest.useFakeTimers();
 
 jest.mock("../entity");
@@ -82,11 +84,14 @@ describe("Physics", () => {
       expect(physics.entities[0].checkCollisions).toHaveBeenCalledTimes(1);
     });
 
-    // @todo
-    it.skip("should calculate the entities collisions on every tick if shouldApplyCollisions is true", () => {
+    it("should calculate the entities collisions on every tick if shouldApplyCollisions is true", () => {
       const physics = new Physics({ shouldApplyCollisions: true });
 
       physics.start();
+
+      Entity.prototype.checkCollisions = jest
+        .fn()
+        .mockImplementation(() => ["some-id", "another-id"]);
 
       physics.addEntity(new Entity("some-id"));
 
@@ -96,11 +101,56 @@ describe("Physics", () => {
       expect(physics.entities[0].checkCollisions).toHaveBeenCalledTimes(1);
     });
 
-    // @todo
-    it.skip("should not calculate the collision results by default", () => {});
+    it("should not calculate the collision results by default", () => {
+      const physics = new Physics({
+        shouldDetectCollisions: true,
+      });
 
-    // @todo
-    it.skip("should calculate the collision results if shouldApplyCollisions is true", () => {});
+      physics.start();
+
+      Entity.prototype.checkCollisions = jest
+        .fn()
+        .mockImplementation(() => ["some-id", "another-id"]);
+
+      physics.addEntity(new Entity("some-id"));
+
+      // ? 60fps means around 16ms per frame, so we advance by 17 for 1 frame
+      jest.advanceTimersByTime(17);
+
+      expect(collisionForce).toHaveBeenCalledTimes(0);
+    });
+
+    it("should calculate the collision results if shouldApplyCollisions is true", () => {
+      const physics = new Physics({
+        shouldApplyCollisions: true,
+      });
+
+      physics.start();
+
+      const newEntity = {
+        id: "some-id",
+        tick: jest.fn(),
+        addForce: jest.fn(),
+        getCollisionModel: jest.fn(),
+        checkCollisions: jest.fn().mockImplementation(() => ["another-id"]),
+      } as unknown as Entity;
+
+      physics.addEntity({
+        id: "another-id",
+        tick: jest.fn(),
+        addForce: jest.fn(),
+        getCollisionModel: jest.fn(),
+        checkCollisions: jest.fn().mockImplementation(() => ["some-id"]),
+      } as unknown as Entity);
+
+      physics.addEntity(newEntity);
+
+      // ? 60fps means around 16ms per frame, so we advance by 17 for 1 frame
+      jest.advanceTimersByTime(17);
+
+      expect(collisionForce).toHaveBeenCalledTimes(4);
+      expect(newEntity.addForce).toHaveBeenCalledTimes(2);
+    });
 
     it("should call the callback if it was given", () => {
       const callback = jest.fn();
