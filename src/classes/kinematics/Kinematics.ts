@@ -1,7 +1,7 @@
-import { Vector3 } from "three";
+import { Vector2 } from "three";
 
 export class Kinematics {
-  public velocity: Vector3;
+  public velocity: Vector2;
   public minVelocity: number;
   public maxVelocity: number;
   public acceleration: number;
@@ -13,14 +13,14 @@ export class Kinematics {
     acceleration?: number;
     frictionMultiplier?: number;
   }) {
-    this.velocity = new Vector3(0, 0, 0);
+    this.velocity = new Vector2(0, 0);
     this.minVelocity = options?.minVelocity || 0.5;
     this.maxVelocity = options?.maxVelocity || 9.5;
     this.acceleration = options?.acceleration || 0.7;
     this.frictionMultiplier = options?.frictionMultiplier || 0.9;
   }
 
-  public addForce(force: Vector3): void {
+  public addForce(force: Vector2): void {
     force.multiplyScalar(this.acceleration);
 
     this.velocity.add(force);

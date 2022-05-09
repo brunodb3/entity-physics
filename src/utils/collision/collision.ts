@@ -1,24 +1,31 @@
-import { Vector3 } from "three";
+import { Vector2 } from "three";
 
 export interface ICollisionEntity {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   mass?: number;
-  width: number;
-  height: number;
+  min: { x: number; y: number };
+  max: { x: number; y: number };
   velocity?: { x: number; y: number };
 }
 
-export function testForCollision(
+export function aabbCollisionTest(
   entity1: ICollisionEntity,
   entity2: ICollisionEntity
 ): boolean {
-  return (
-    entity1.x < entity2.x + entity2.width &&
-    entity1.x + entity1.width > entity2.x &&
-    entity1.y < entity2.y + entity2.height &&
-    entity1.y + entity1.height > entity2.y
-  );
+  const distanceEntity1 = {
+    x: entity1.min.x - entity2.max.x,
+    y: entity1.min.y - entity2.max.y,
+  };
+  const distanceEntity2 = {
+    x: entity2.min.x - entity1.max.x,
+    y: entity2.min.y - entity1.max.y,
+  };
+
+  if (distanceEntity1.x > 0 || distanceEntity1.y > 0) return false;
+  if (distanceEntity2.x > 0 || distanceEntity2.y > 0) return false;
+
+  return true;
 }
 
 // ? This returns the collision force for the first entity. If you want for both,
@@ -31,40 +38,37 @@ export function collisionForce(
   entity1: ICollisionEntity,
   entity2: ICollisionEntity,
   impulsePower?: number
-): Vector3 {
+): Vector2 {
   if (!entity1.velocity || !entity2.velocity) {
-    return new Vector3(0, 0);
+    return new Vector2(0, 0);
   }
 
-  const entity1Vector = new Vector3(entity1.x, entity1.y);
-  const entity2Vector = new Vector3(entity2.x, entity2.y);
+  if (!impulsePower) impulsePower = 5;
+  if (!entity1.mass) entity1.mass = 1;
+  if (!entity2.mass) entity2.mass = 1;
 
-  const collisionVector = new Vector3(
+  const entity1Vector = new Vector2(entity1.x, entity1.y);
+  const entity2Vector = new Vector2(entity2.x, entity2.y);
+
+  const collisionVector = new Vector2(
     entity1Vector.x - entity2Vector.x,
     entity1Vector.y - entity2Vector.y
   );
 
-  const distance = entity1Vector.distanceTo(entity2Vector);
+  collisionVector.normalize();
 
-  const collisionNormVector = new Vector3(
-    collisionVector.x / distance,
-    collisionVector.y / distance
-  );
-
-  const relativeVelocityVector = new Vector3(
+  const relativeVelocityVector = new Vector2(
     entity1.velocity.x - entity2.velocity.x,
     entity1.velocity.y - entity2.velocity.y
   );
 
   const speed =
-    relativeVelocityVector.x * collisionNormVector.x +
-    relativeVelocityVector.y * collisionNormVector.y;
+    relativeVelocityVector.x * collisionVector.x +
+    relativeVelocityVector.y * collisionVector.y;
 
-  const impulse =
-    (impulsePower || 5 * speed) / ((entity1.mass || 1) + (entity2.mass || 1));
+  const impulse = (impulsePower * speed) / (entity1.mass + entity2.mass);
 
-  return new Vector3(
-    impulse * collisionNormVector.x,
-    impulse * collisionNormVector.y
-  );
+  collisionVector.multiplyScalar(impulse);
+
+  return collisionVector;
 }

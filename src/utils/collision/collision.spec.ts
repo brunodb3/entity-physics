@@ -1,28 +1,29 @@
-import { Vector3 } from "three";
+import { Vector2 } from "three";
 import {
-  testForCollision,
+  aabbCollisionTest,
   collisionForce,
   ICollisionEntity,
 } from "./collision";
 
 describe("collision", () => {
-  describe("testForCollision()", () => {
+  describe("aabbCollisionTest()", () => {
     it("should detect a collision", () => {
-      const firstEntity: ICollisionEntity = { x: 0, y: 0, width: 1, height: 1 };
+      const firstEntity: ICollisionEntity = {
+        min: { x: 0, y: 0 },
+        max: { x: 1, y: 1 },
+      };
       const secondEntity: ICollisionEntity = {
-        x: 2,
-        y: 2,
-        width: 1,
-        height: 1,
+        min: { x: 2, y: 2 },
+        max: { x: 3, y: 3 },
       };
 
-      expect(testForCollision(firstEntity, secondEntity)).toBe(false);
+      expect(aabbCollisionTest(firstEntity, secondEntity)).toBe(false);
 
       // ? Moving second entity to collide with the first
-      secondEntity.x = 0.5;
-      secondEntity.y = 0.5;
+      secondEntity.min.x = 1;
+      secondEntity.min.y = 1;
 
-      expect(testForCollision(firstEntity, secondEntity)).toBe(true);
+      expect(aabbCollisionTest(firstEntity, secondEntity)).toBe(true);
     });
   });
 
@@ -31,19 +32,19 @@ describe("collision", () => {
       const firstEntity: ICollisionEntity = {
         x: 0,
         y: 0,
-        width: 1,
-        height: 1,
         velocity: { x: 0, y: 0 },
+        min: { x: 0, y: 0 },
+        max: { x: 1, y: 1 },
       };
       const secondEntity: ICollisionEntity = {
         x: 2,
         y: 2,
-        width: 1,
-        height: 1,
+        min: { x: 0, y: 0 },
+        max: { x: 1, y: 1 },
       };
 
       expect(collisionForce(firstEntity, secondEntity)).toStrictEqual(
-        new Vector3(0, 0)
+        new Vector2(0, 0)
       );
     });
 
@@ -52,25 +53,25 @@ describe("collision", () => {
         x: 0,
         y: 0,
         mass: 1,
-        width: 1,
-        height: 1,
+        min: { x: 0, y: 0 },
+        max: { x: 1, y: 1 },
         velocity: { x: 1, y: 0 },
       };
       const secondEntity: ICollisionEntity = {
         x: 2,
         y: 0,
         mass: 1,
-        width: 1,
-        height: 1,
+        min: { x: 0, y: 0 },
+        max: { x: 1, y: 1 },
         velocity: { x: 0, y: 0 },
       };
 
       expect(collisionForce(firstEntity, secondEntity, 1)).toStrictEqual(
-        new Vector3(-0.5, 0)
+        new Vector2(0.5, -0)
       );
 
       expect(collisionForce(secondEntity, firstEntity, 1)).toStrictEqual(
-        new Vector3(0.5, 0)
+        new Vector2(-0.5, -0)
       );
     });
   });
