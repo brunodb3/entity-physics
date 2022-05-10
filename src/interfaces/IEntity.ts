@@ -9,4 +9,10 @@ export interface IEntity {
   type: "ghost" | "static" | "kinematic";
   animation: { frame: number; speed: number; name: string };
   aabb: { min: { x: number; y: number }; max: { x: number; y: number } };
+  boundingBox: {
+    topLeftX: number;
+    topLeftY: number;
+    width: number;
+    height: number;
+  };
 }

@@ -118,6 +118,12 @@ export class Entity {
         min: this.aabb.min,
         max: this.aabb.max,
       },
+      boundingBox: {
+        topLeftX: this.aabb.min.x,
+        topLeftY: this.aabb.max.y,
+        width: this.aabb.max.x - this.aabb.min.x,
+        height: this.aabb.max.y - this.aabb.min.y,
+      },
     };
   }
 

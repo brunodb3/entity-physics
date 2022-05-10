@@ -13,19 +13,12 @@ export function aabbCollisionTest(
   entity1: ICollisionEntity,
   entity2: ICollisionEntity
 ): boolean {
-  const distanceEntity1 = {
-    x: entity1.min.x - entity2.max.x,
-    y: entity1.min.y - entity2.max.y,
-  };
-  const distanceEntity2 = {
-    x: entity2.min.x - entity1.max.x,
-    y: entity2.min.y - entity1.max.y,
-  };
-
-  if (distanceEntity1.x > 0 || distanceEntity1.y > 0) return false;
-  if (distanceEntity2.x > 0 || distanceEntity2.y > 0) return false;
-
-  return true;
+  return (
+    entity1.min.x <= entity2.max.x &&
+    entity1.max.x >= entity2.min.x &&
+    entity1.min.y <= entity2.max.y &&
+    entity1.max.y >= entity2.min.y
+  );
 }
 
 // ? This returns the collision force for the first entity. If you want for both,
