@@ -10,6 +10,8 @@ export class Entity {
 
   public id: string;
   public mass: number;
+  public width: number;
+  public height: number;
   public anchor: number;
   public kinematics: Kinematics;
   public movementMultiplier: number;
@@ -30,34 +32,32 @@ export class Entity {
     id: string,
     options?: {
       mass?: number;
+      width?: number;
+      height?: number;
       anchor?: number;
       minVelocity?: number;
       maxVelocity?: number;
       acceleration?: number;
       frictionMultiplier?: number;
       movementMultiplier?: number;
+      position?: { x?: number; y?: number };
       type?: "ghost" | "static" | "kinematic";
       animation?: {
         frame?: number;
         speed?: number;
         name?: string;
       };
-      aabb?: {
-        min?: { x: number; y: number };
-        max?: { x: number; y: number };
-      };
     }
   ) {
     this.id = id;
     this.direction = "right";
-    this.position = { x: 0, y: 0 };
     this.mass = options?.mass || 1;
     this.anchor = options?.anchor || 1;
     this.type = options?.type || "ghost";
     this.movementMultiplier = options?.movementMultiplier || 1;
-    this.aabb = {
-      min: options?.aabb?.min || { x: 0, y: 0 },
-      max: options?.aabb?.max || { x: 0, y: 0 },
+    this.position = {
+      x: options?.position?.x || 0,
+      y: options?.position?.y || 0,
     };
     this.animation = {
       frame: options?.animation?.frame || 0,
@@ -70,6 +70,11 @@ export class Entity {
       acceleration: options?.acceleration,
       frictionMultiplier: options?.frictionMultiplier,
     });
+
+    this.width = options?.width || 0;
+    this.height = options?.height || 0;
+
+    this.aabb = this.getAABB();
   }
 
   public tick(delta: number): void {
@@ -135,6 +140,19 @@ export class Entity {
       min: this.aabb.min,
       max: this.aabb.max,
       velocity: this.kinematics.velocity,
+    };
+  }
+
+  public getAABB() {
+    return {
+      min: {
+        x: this.position.x - this.width * this.anchor,
+        y: this.position.y - this.height * this.anchor,
+      },
+      max: {
+        x: this.position.x + this.width * this.anchor,
+        y: this.position.y + this.height * this.anchor,
+      },
     };
   }
 }

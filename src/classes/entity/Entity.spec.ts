@@ -52,10 +52,8 @@ describe("Entity", () => {
     it("should return entity in JSON", () => {
       const entity = new Entity("some-id", {
         anchor: 0.5,
-        aabb: {
-          min: { x: 0, y: 0 },
-          max: { x: 2, y: 2 },
-        },
+        width: 2,
+        height: 2,
       });
 
       expect(entity.toJSON()).toStrictEqual({
@@ -68,10 +66,10 @@ describe("Entity", () => {
         position: { x: 0, y: 0 },
         velocity: { x: 0, y: 0 },
         animation: { frame: 0, speed: 0, name: "default" },
-        aabb: { min: { x: 0, y: 0 }, max: { x: 2, y: 2 } },
+        aabb: { min: { x: -1, y: -1 }, max: { x: 1, y: 1 } },
         boundingBox: {
-          topLeftX: 0,
-          topLeftY: 2,
+          topLeftX: -1,
+          topLeftY: 1,
           width: 2,
           height: 2,
         },
@@ -81,10 +79,9 @@ describe("Entity", () => {
     it("should return entity in JSON with correct bounding box", () => {
       const entity = new Entity("some-id", {
         anchor: 0.5,
-        aabb: {
-          min: { x: -10, y: -5 },
-          max: { x: 5, y: 10 },
-        },
+        width: 10,
+        height: 10,
+        position: { x: -5, y: -5 },
       });
 
       expect(entity.toJSON()).toStrictEqual({
@@ -94,16 +91,31 @@ describe("Entity", () => {
         type: "ghost",
         direction: "right",
         movementMultiplier: 1,
-        position: { x: 0, y: 0 },
         velocity: { x: 0, y: 0 },
+        position: { x: -5, y: -5 },
         animation: { frame: 0, speed: 0, name: "default" },
-        aabb: { min: { x: -10, y: -5 }, max: { x: 5, y: 10 } },
+        aabb: { min: { x: -10, y: -10 }, max: { x: 0, y: 0 } },
         boundingBox: {
           topLeftX: -10,
-          topLeftY: 10,
-          width: 15,
-          height: 15,
+          topLeftY: 0,
+          width: 10,
+          height: 10,
         },
+      });
+    });
+  });
+
+  describe("getAABB()", () => {
+    it("should return the axis-aligned bounding box", () => {
+      const entity = new Entity("some-id", {
+        anchor: 0.5,
+        width: 2,
+        height: 2,
+      });
+
+      expect(entity.getAABB()).toStrictEqual({
+        min: { x: -1, y: -1 },
+        max: { x: 1, y: 1 },
       });
     });
   });
