@@ -46,6 +46,25 @@ describe("Entity", () => {
 
       expect(entity.direction).toBe("left");
     });
+
+    it("should calculate AABB on tick", () => {
+      const entity = new Entity("some-id");
+
+      expect(entity.aabb).toStrictEqual({
+        min: { x: 0, y: 0 },
+        max: { x: 0, y: 0 },
+      });
+
+      entity.position.x = 2;
+      entity.position.y = 2;
+
+      entity.tick(1);
+
+      expect(entity.aabb).toStrictEqual({
+        min: { x: 2, y: 2 },
+        max: { x: 2, y: 2 },
+      });
+    });
   });
 
   describe("toJSON()", () => {

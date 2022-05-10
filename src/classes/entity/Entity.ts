@@ -90,6 +90,8 @@ export class Entity {
     if (velocity.x > 0) {
       this.direction = "right";
     }
+
+    this.aabb = this.getAABB();
   }
 
   public addForce(force: { x: number; y: number }): void {
