@@ -14,8 +14,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@types/three": "^0.139.0",
-    "three": "^0.139.2"
+    "@types/victor": "^1.1.0",
+    "victor": "^1.1.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

@@ -1,3 +1,3 @@
 export * from "./entity";
 export * from "./kinematics";
-export * from "./physics";
+export * from "./world";

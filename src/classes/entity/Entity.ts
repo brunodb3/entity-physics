@@ -1,13 +1,9 @@
-import { Vector2 } from "three";
+import Victor from "victor";
 
-import { IEntity } from "@interfaces";
 import { Kinematics } from "@classes";
-import { ICollisionEntity } from "@utils";
+import { IEntity } from "@interfaces";
 
 export class Entity {
-  // @todo: maybe enable this?
-  // [key: string]: any;
-
   public id: string;
   public mass: number;
   public width: number;
@@ -15,8 +11,6 @@ export class Entity {
   public anchor: number;
   public kinematics: Kinematics;
   public movementMultiplier: number;
-  // @todo: add more directions (up, up-right, down-right, down, etc...)
-  //        could also make it a circle and the direction is the angle? (number)
   public direction: "left" | "right";
   public position: { x: number; y: number };
   public type: "ghost" | "static" | "kinematic";
@@ -95,7 +89,7 @@ export class Entity {
   }
 
   public addForce(force: { x: number; y: number }): void {
-    const forceVector = new Vector2(force.x, force.y);
+    const forceVector = new Victor(force.x, force.y);
 
     this.kinematics.addForce(forceVector);
   }
@@ -103,8 +97,6 @@ export class Entity {
   public toJSON(): IEntity {
     return {
       id: this.id,
-      mass: this.mass,
-      type: this.type,
       anchor: this.anchor,
       direction: this.direction,
       movementMultiplier: this.movementMultiplier,
@@ -127,21 +119,10 @@ export class Entity {
       },
       boundingBox: {
         topLeftX: this.aabb.min.x,
-        topLeftY: this.aabb.max.y,
+        topLeftY: this.aabb.min.y, // ? PixiJS inverts the Y axis
         width: this.aabb.max.x - this.aabb.min.x,
         height: this.aabb.max.y - this.aabb.min.y,
       },
-    };
-  }
-
-  public getCollisionModel(): ICollisionEntity {
-    return {
-      mass: this.mass,
-      x: this.position.x,
-      y: this.position.y,
-      min: this.aabb.min,
-      max: this.aabb.max,
-      velocity: this.kinematics.velocity,
     };
   }
 
